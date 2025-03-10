@@ -64,6 +64,8 @@ jobs:
 
       - name: Publish to GitHub pages
         run: |
+          git config user.email "asv@ci"
+          git config --global user.name "airspeed velocity"
           cp -r /mnt/c/actions-runner/_work/benchmarks/benchmarks/results/BOSGAME-SUE4P-windows results/
           asv publish
           asv gh-pages
