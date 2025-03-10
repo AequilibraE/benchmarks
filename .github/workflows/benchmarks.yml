@@ -21,13 +21,12 @@ jobs:
 
       - name: Update PATH (Windows)
         if: matrix.os == 'Windows'
-        run: echo "\Users\admin\.local\bin" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+        run: echo "C:\Users\admin\.local\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Display PATH (Windows)
         if: matrix.os == 'Windows'
         run: |
-          echo "$env:HOMEPATH\.local\bin"
-          echo "$env:GITHUB_PATH"
+          cat "$env:GITHUB_PATH"
 
       - uses: actions/checkout@v4
         with:
