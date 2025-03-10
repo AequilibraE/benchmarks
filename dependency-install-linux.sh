@@ -12,3 +12,9 @@ if ! [ -x "$(command -v uv)" ]; then
 else
     echo "UV is already installed."
 fi
+
+uv venv --python 3.12 venv-py312
+source venv-py312/bin/activate
+uv pip install asv
+
+asv machine

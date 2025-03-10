@@ -30,3 +30,10 @@ if (-not (Get-Command "uv" -ErrorAction SilentlyContinue)) {
 } else {
   Write-Host "UV is already installed."
 }
+
+
+uv venv --python 3.12 venv-py312
+venv-py312\Scripts\activate
+uv pip install asv
+
+asv machine
