@@ -15,10 +15,6 @@ jobs:
         os: [Windows, Linux]
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          clean: false
-
       - name: Update PATH (Linux)
         if: matrix.os == 'Linux'
         run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
@@ -27,11 +23,15 @@ jobs:
         if: matrix.os == 'Windows'
         run: echo "$env:HOMEPATH\.local\bin" | Out-File -FilePath "$env:GITHUB_PATH" -Append
 
-      - name: Update PATH (Windows)
+      - name: Display PATH (Windows)
         if: matrix.os == 'Windows'
         run: |
           echo "$env:HOMEPATH\.local\bin"
           echo "$env:GITHUB_PATH"
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
 
       - name: Check and Install Python versions
         run: |
