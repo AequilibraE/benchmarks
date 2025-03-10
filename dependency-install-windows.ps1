@@ -20,20 +20,3 @@ if (-not (Test-Path "C:\spatialite\mod_spatialite.dll")) {
 } else {
   Write-Host "SpatiaLite is already installed."
 }
-
-# UV installation check
-$UV_VERSION = "0.6.5"
-if (-not (Get-Command "uv" -ErrorAction SilentlyContinue)) {
-  Write-Host "UV is not installed. Installing..."
-  Invoke-WebRequest -Uri https://astral.sh/uv/$UV_VERSION/install.ps1 -OutFile C:\TEMP\uv-install.ps1
-  powershell -ExecutionPolicy Bypass -File C:\TEMP\uv-install.ps1
-} else {
-  Write-Host "UV is already installed."
-}
-
-
-uv venv --python 3.12 venv-py312
-venv-py312\Scripts\activate
-uv pip install asv
-
-asv machine

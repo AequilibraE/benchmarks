@@ -38,7 +38,6 @@ jobs:
 
       - name: Run ASV
         run: |
-          asv machine --os ${{ matrix.os }} --cpu "AMD Ryzen 9 6900HX with Radeon Graphics" --machine ${{ matrix.MACHINE }} --num_cpu "16" --ram "32G"
           asv run --machine ${{ matrix.MACHINE }}
 
 

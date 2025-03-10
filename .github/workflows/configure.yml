@@ -1,0 +1,56 @@
+name: airspeed velocity machine configure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  configure:
+    runs-on: [self-hosted, "${{ matrix.os }}"]
+    strategy:
+      matrix:
+        include:
+          - os: Linux
+            MACHINE: BOSGAME-SUE4P-wsl
+
+          - os: Windows
+            MACHINE: BOSGAME-SUE4P-windows
+
+    steps:
+      - name: Retrieve and set system information on Linux
+        if: matrix.os == 'Linux'
+        run: |
+          OS_NAME=$(uname -s)
+          CPU_INFO=$(lscpu | grep "Model name" | awk '{for (i=3; i<=NF; ++i) printf $i " "; print ""}' | sed 's/ *$//g')
+          NUM_CPUS=$(nproc)
+          RAM_INFO=$(free -h --si | awk '/Mem:/ {print $2}')
+          echo "os_name=$OS_NAME" >> $GITHUB_ENV
+          echo "cpu_info=$CPU_INFO" >> $GITHUB_ENV
+          echo "num_cpus=$NUM_CPUS" >> $GITHUB_ENV
+          echo "ram_info=$RAM_INFO" >> $GITHUB_ENV
+
+      - name: Retrieve and set system information on Windows
+        if: matrix.os == 'Windows'
+        run: |
+          $os_name = (Get-CimInstance Win32_OperatingSystem).Caption
+          $cpu_info = (Get-CimInstance Win32_Processor).Name
+          $num_cpus = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
+          $ram_info = "{0}GB" -f [math]::Round((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1GB, 2)
+          echo "os_name=$os_name" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "cpu_info=$cpu_info" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "num_cpus=$num_cpus" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "ram_info=$ram_info" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          prune-cache: false
+
+      - name: Configure ASV
+        run: |
+          asv machine --os "${{ env.os_name }}" --cpu "${{ env.cpu_info }}" --machine ${{ matrix.MACHINE }} --num_cpu "${{ env.num_cpus }}" --ram "${{ env.ram_info }}"
