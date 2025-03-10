@@ -21,7 +21,7 @@ jobs:
 
       - name: Update PATH (Windows)
         if: matrix.os == 'Windows'
-        run: echo "$env:HOMEPATH\.local\bin" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+        run: echo "\Users\admin\.local\bin" | Out-File -FilePath "$env:GITHUB_PATH" -Append
 
       - name: Display PATH (Windows)
         if: matrix.os == 'Windows'
