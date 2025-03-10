@@ -13,11 +13,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: Windows
-            MACHINE: BOSGAME-SUE4P-windows
-
           - os: Linux
             MACHINE: BOSGAME-SUE4P-wsl
+
+          - os: Windows
+            MACHINE: BOSGAME-SUE4P-windows
 
     steps:
       - uses: actions/checkout@v4
