@@ -27,6 +27,12 @@ jobs:
         if: matrix.os == 'Windows'
         run: echo "$env:HOMEPATH\.local\bin" | Out-File -FilePath "$env:GITHUB_PATH" -Append
 
+      - name: Update PATH (Windows)
+        if: matrix.os == 'Windows'
+        run: |
+          echo "$env:HOMEPATH\.local\bin"
+          echo "$env:GITHUB_PATH"
+
       - name: Check and Install Python versions
         run: |
           uv python list
