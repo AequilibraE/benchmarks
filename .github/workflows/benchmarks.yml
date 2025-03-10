@@ -3,7 +3,6 @@ name: airspeed velocity
 on:
   workflow_dispatch:
 
-
 jobs:
   benchmarking:
     concurrency:
@@ -20,51 +19,25 @@ jobs:
             MACHINE: BOSGAME-SUE4P-windows
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          clean: false
-
-      - name: Install uv and set the python version
-        uses: astral-sh/setup-uv@v5
+      - uses: ./.github/actions/setup-env
         with:
           python-version: "3.12"
-          enable-cache: true
-          prune-cache: false
-
-      - name: Install ASV and python versions for ASV
-        run: |
-          uv python install 3.11 3.12
-          uv pip install asv
+          additional-python-versions: "3.11"
 
       - name: Run ASV
         run: |
           asv run --machine ${{ matrix.MACHINE }}
 
-
   results:
     needs: [benchmarking]
     runs-on: [self-hosted, Linux]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          clean: false
-
-      - name: Install uv and set the python version
-        uses: astral-sh/setup-uv@v5
+      - uses: ./.github/actions/setup-env
         with:
           python-version: "3.12"
-          enable-cache: true
-          prune-cache: false
-
-      - name: Install ASV and python versions for ASV
-        run: |
-          uv python install 3.11 3.12
-          uv pip install asv
 
       - name: Publish to GitHub pages
         run: |
-          git config user.email "asv@ci"
-          git config --global user.name "airspeed velocity"
           cp -r /mnt/c/actions-runner/_work/benchmarks/benchmarks/results/BOSGAME-SUE4P-windows results/
           asv publish
           asv gh-pages

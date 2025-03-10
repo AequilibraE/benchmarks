@@ -40,16 +40,9 @@ jobs:
           echo "num_cpus=$num_cpus" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "ram_info=$ram_info" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      - uses: actions/checkout@v4
-        with:
-          clean: false
-
-      - name: Install uv and set the python version
-        uses: astral-sh/setup-uv@v5
+      - uses: ./.github/actions/setup-env
         with:
           python-version: "3.12"
-          enable-cache: true
-          prune-cache: false
 
       - name: Configure ASV
         run: |
