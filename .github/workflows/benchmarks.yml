@@ -24,13 +24,6 @@ jobs:
         run: |
           echo "C:\Users\admin\.local\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Display PATH (Windows)
-        if: matrix.os == 'Windows'
-        run: |
-          Write-Output $env:GITHUB_PATH
-          cat $env:GITHUB_PATH | Write-Output 
-          Write-Output "$PATH"
-
       - uses: actions/checkout@v4
         with:
           clean: false
