@@ -44,7 +44,7 @@ jobs:
 
   results:
     needs: [benchmarking]
-    uns-on: [self-hosted, Linux]
+    runs-on: [self-hosted, Linux]
     steps:
       - uses: actions/checkout@v4
         with:
