@@ -26,7 +26,8 @@ jobs:
       - name: Display PATH (Windows)
         if: matrix.os == 'Windows'
         run: |
-          cat "$env:GITHUB_PATH"
+          echo $env:GITHUB_PATH
+          cat $env:GITHUB_PATH
 
       - uses: actions/checkout@v4
         with:
