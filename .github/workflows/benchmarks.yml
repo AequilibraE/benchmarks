@@ -40,3 +40,30 @@ jobs:
         run: |
           asv machine --os ${{ matrix.os }} --cpu "AMD Ryzen 9 6900HX with Radeon Graphics" --machine ${{ matrix.MACHINE }} --num_cpu "16" --ram "32G"
           asv run --machine ${{ matrix.MACHINE }}
+
+
+  results:
+    needs: [benchmarking]
+    uns-on: [self-hosted, Linux]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          prune-cache: false
+
+      - name: Install ASV and python versions for ASV
+        run: |
+          uv python install 3.11 3.12
+          uv pip install asv
+
+      - name: Publish to GitHub pages
+        run: |
+          cp -r /mnt/c/actions-runner/_work/benchmarks/benchmarks/results/BOSGAME-SUE4P-windows results/
+          asv publish
+          asv gh-pages
