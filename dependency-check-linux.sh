@@ -8,10 +8,7 @@ sudo ln -sf /usr/lib/x86_64-linux-gnu/mod_spatialite.so /usr/lib/x86_64-linux-gn
 UV_VERSION="0.6.5"
 if ! [ -x "$(command -v uv)" ]; then
     echo "UV is not installed. Installing..."
-    curl -o uv-install.sh https://astral.sh/uv/${UV_VERSION}/install.sh
-    chmod +x uv-install.sh
-    ./uv-install.sh
-    rm uv-install.sh
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 else
     echo "UV is already installed."
 fi
