@@ -15,6 +15,7 @@ jobs:
         os: [Windows, Linux]
 
     steps:
+      - uses: actions/checkout@v4
       - name: Check and Install Python versions
         run: |
           uv python list
