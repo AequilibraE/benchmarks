@@ -28,7 +28,7 @@ jobs:
         if: matrix.os == 'Windows'
         run: |
           Write-Output $env:GITHUB_PATH
-          cat $env:GITHUB_PATHe | Write-Output 
+          cat $env:GITHUB_PATH | Write-Output 
           Write-Output "$PATH"
 
       - uses: actions/checkout@v4
