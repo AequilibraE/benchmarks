@@ -1,0 +1,47 @@
+name: Publish results
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Run airspeed velocity"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: [self-hosted, Linux]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          prune-cache: false
+
+      - name: Install  ASV
+        run: uv pip install asv
+
+      - name: Configure git
+        run: |
+          git config user.email "asv@ci"
+          git config user.name "airspeed velocity"
+
+      - name: Publish to GitHub pages
+        run: |
+          cp -r /mnt/c/actions-runner/_work/benchmarks/benchmarks/results/BOSGAME-SUE4P-windows results/
+          asv publish
+          asv gh-pages --rewrite
+
+      - name: Upload results as artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: asv-results
+          path: ./results/
+          overwrite: true

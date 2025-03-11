@@ -1,10 +1,7 @@
-name: airspeed velocity
+name: Run airspeed velocity
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   benchmarking:
@@ -51,39 +48,3 @@ jobs:
           foreach ($tag in $tags) {
               asv run "$($tag.ToString().Trim())^!" --machine ${{ matrix.MACHINE }}
           }
-
-  results:
-    needs: [benchmarking]
-    runs-on: [self-hosted, Linux]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          clean: false
-
-      - name: Install uv and set the python version
-        uses: astral-sh/setup-uv@v5
-        with:
-          python-version: "3.12"
-          enable-cache: true
-          prune-cache: false
-
-      - name: Install  ASV
-        run: uv pip install asv
-
-      - name: Configure git
-        run: |
-          git config user.email "asv@ci"
-          git config user.name "airspeed velocity"
-
-      - name: Publish to GitHub pages
-        run: |
-          cp -r /mnt/c/actions-runner/_work/benchmarks/benchmarks/results/BOSGAME-SUE4P-windows results/
-          asv publish
-          asv gh-pages --rewrite
-
-      - name: Upload results as artefact
-        uses: actions/upload-artifact@v4
-        with:
-          name: asv-results
-          path: ./results/
-          overwrite: true
