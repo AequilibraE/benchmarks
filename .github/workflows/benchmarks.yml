@@ -31,7 +31,7 @@ jobs:
           prune-cache: false
 
       - name: Install additional Python versions for ASV
-        run: uv python install 3.11 3.12
+        run: uv python install 3.10 3.11 3.12
 
       - name: Install  ASV
         run: uv pip install asv
@@ -46,7 +46,7 @@ jobs:
         run: |
           $tags = git -C aequilibrae tag -l | Select-String -Pattern '.*' | Select-Object -Last 5
           foreach ($tag in $tags) {
-              asv run "$($tag.Trim())^!" --machine $env:MATRIX_MACHINE
+              asv run "$($tag.ToString().Trim())^!" --machine $env:MATRIX_MACHINE
           }
 
   results:

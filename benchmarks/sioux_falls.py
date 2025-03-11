@@ -8,7 +8,7 @@ from aequilibrae.paths import NetworkSkimming
 class GraphBuilding:
     def setup(self):
         self.dir = TemporaryDirectory()
-        self.project = create_example(os.path.join(self.dir.name, "project"), "coquimbo")
+        self.project = create_example(os.path.join(self.dir.name, "project"), "sioux_falls")
 
         self.project.network.build_graphs()
         self.graph = self.project.network.graphs["c"]
@@ -31,7 +31,7 @@ class GraphBuilding:
 class PathComputation:
     def setup(self):
         self.dir = TemporaryDirectory()
-        self.project = create_example(os.path.join(self.dir.name, "project"), "coquimbo")
+        self.project = create_example(os.path.join(self.dir.name, "project"), "sioux_falls")
 
         self.project.network.build_graphs()
         self.graph = self.project.network.graphs["c"]
@@ -45,22 +45,22 @@ class PathComputation:
         self.project.close()
 
     def time_compute_path(self):
-        self.res.compute_path(32343, 22041)
+        self.res.compute_path(1, 22)
 
     def time_compute_path_early_exit(self):
-        self.res.compute_path(32343, 22041, early_exit=True)
+        self.res.compute_path(1, 22, early_exit=True)
 
     def time_compute_path_a_star_equirectangular(self):
-        self.res.compute_path(32343, 22041, a_star=True, heuristic="equirectangular")
+        self.res.compute_path(1, 22, a_star=True, heuristic="equirectangular")
 
     def time_compute_path_a_star_haversine(self):
-        self.res.compute_path(32343, 22041, a_star=True, heuristic="haversine")
+        self.res.compute_path(1, 22, a_star=True, heuristic="haversine")
 
 
 class Skimming:
     def setup(self):
         self.dir = TemporaryDirectory()
-        self.project = create_example(os.path.join(self.dir.name, "project"), "coquimbo")
+        self.project = create_example(os.path.join(self.dir.name, "project"), "sioux_falls")
 
         self.project.network.build_graphs()
         self.graph = self.project.network.graphs["c"]
