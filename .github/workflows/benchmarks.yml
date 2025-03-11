@@ -46,7 +46,7 @@ jobs:
         run: |
           $tags = git -C aequilibrae tag -l | Select-String -Pattern '.*' | Select-Object -Last 5
           foreach ($tag in $tags) {
-              asv run "$($tag.ToString().Trim())^!" --machine $env:MATRIX_MACHINE
+              asv run "$($tag.ToString().Trim())^!" --machine ${{ matrix.MACHINE }}
           }
 
   results:
