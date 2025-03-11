@@ -26,7 +26,7 @@ jobs:
 
       - name: Run ASV
         run: |
-          asv run --machine ${{ matrix.MACHINE }}
+          for tag in $(cd aequilibrae/ && git tag -l | tail -n 5); do asv --machine ${{ matrix.MACHINE }} run "$tag^!"; done
 
   results:
     needs: [benchmarking]
