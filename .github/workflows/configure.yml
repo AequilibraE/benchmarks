@@ -1,4 +1,4 @@
-name: airspeed velocity machine configure
+name: Configure machines for ASV
 
 on:
   workflow_dispatch:
@@ -66,5 +66,5 @@ jobs:
 
       - name: Configure ASV
         run: |
-          asv machine -machine ${{ matrix.MACHINE }} --os "${{ env.os_name }}" --cpu "${{ env.cpu_info }}" ---num_cpu "${{ env.num_cpus }}" --ram "${{ env.ram_info }}" --arch "${{ env.arch_info }}"
+          asv machine --machine ${{ matrix.MACHINE }} --os "${{ env.os_name }}" --cpu "${{ env.cpu_info }}" --num_cpu "${{ env.num_cpus }}" --ram "${{ env.ram_info }}" --arch "${{ env.arch_info }}"
           cat results/${{ matrix.MACHINE }}/machine.json
