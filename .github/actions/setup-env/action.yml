@@ -11,10 +11,6 @@ outputs: {}
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
-      with:
-        clean: false
-
     - name: Install uv and set the python version
       uses: astral-sh/setup-uv@v5
       with:

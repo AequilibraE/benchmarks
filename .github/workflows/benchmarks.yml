@@ -19,6 +19,10 @@ jobs:
             MACHINE: BOSGAME-SUE4P-windows
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
       - uses: ./.github/actions/setup-env
         with:
           python-version: "3.12"
@@ -32,6 +36,10 @@ jobs:
     needs: [benchmarking]
     runs-on: [self-hosted, Linux]
     steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+
       - uses: ./.github/actions/setup-env
         with:
           python-version: "3.12"
