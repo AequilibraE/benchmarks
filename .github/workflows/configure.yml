@@ -19,14 +19,16 @@ jobs:
       - name: Retrieve and set system information on Linux
         if: matrix.os == 'Linux'
         run: |
-          OS_NAME=$(uname -s)
+          OS_NAME=$(uname -sr)
           CPU_INFO=$(lscpu | grep "Model name" | awk '{for (i=3; i<=NF; ++i) printf $i " "; print ""}' | sed 's/ *$//g')
           NUM_CPUS=$(nproc)
           RAM_INFO=$(free -h --si | awk '/Mem:/ {print $2}')
+          ARCH_INFO=$(uname -m)
           echo "os_name=$OS_NAME" >> $GITHUB_ENV
           echo "cpu_info=$CPU_INFO" >> $GITHUB_ENV
           echo "num_cpus=$NUM_CPUS" >> $GITHUB_ENV
           echo "ram_info=$RAM_INFO" >> $GITHUB_ENV
+          echo "arch_info=$ARCH_INFO" >> $GITHUB_ENV
 
       - name: Retrieve and set system information on Windows
         if: matrix.os == 'Windows'
@@ -35,6 +37,18 @@ jobs:
           $cpu_info = (Get-CimInstance Win32_Processor).Name
           $num_cpus = (Get-CimInstance Win32_ComputerSystem).NumberOfLogicalProcessors
           $ram_info = "{0}GB" -f [math]::Round((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1GB, 2)
+          $arch_info = (Get-CimInstance Win32_Processor).Architecture
+          switch ($arch_info) {
+            0 { $arch_info = "x86" }
+            1 { $arch_fino = "MIPS" }
+            2 { $arch_fino = "Alpha" }
+            3 { $arch_fino = "PowerPC" }
+            5 { $arch_fino = "ARM" }
+            6 { $arch_fino = "ia64" }
+            9 { $arch_info = "x86_64" }
+            12 { $arch_info = "ARM64" }
+            default { $arch_info = "Unknown" }
+          }
           echo "os_name=$os_name" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "cpu_info=$cpu_info" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "num_cpus=$num_cpus" | Out-File -FilePath $env:GITHUB_ENV -Append
@@ -52,4 +66,5 @@ jobs:
 
       - name: Configure ASV
         run: |
-          asv machine --os "${{ env.os_name }}" --cpu "${{ env.cpu_info }}" --machine ${{ matrix.MACHINE }} --num_cpu "${{ env.num_cpus }}" --ram "${{ env.ram_info }}"
+          asv machine -machine ${{ matrix.MACHINE }} --os "${{ env.os_name }}" --cpu "${{ env.cpu_info }}" ---num_cpu "${{ env.num_cpus }}" --ram "${{ env.ram_info }}" --arch "${{ env.arch_info }}"
+          cat results/${{ matrix.MACHINE }}/machine.json
