@@ -53,6 +53,7 @@ jobs:
           echo "cpu_info=$cpu_info" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "num_cpus=$num_cpus" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "ram_info=$ram_info" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "arch_info=$arch_info" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Install uv and set the python version
         uses: astral-sh/setup-uv@v5
