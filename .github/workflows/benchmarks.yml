@@ -36,9 +36,18 @@ jobs:
       - name: Install  ASV
         run: uv pip install asv
 
-      - name: Run ASV
+      - name: Run ASV (Linux)
+        if: matrix.os == 'Linux'
         run: |
-          for tag in $(cd aequilibrae/ && git tag -l | tail -n 5); do asv --machine ${{ matrix.MACHINE }} run "$tag^!"; done
+          for tag in $(cd aequilibrae/ && git tag -l | tail -n 5); do asv run "$tag^!" --machine ${{ matrix.MACHINE }} ; done
+
+      - name: Run ASV (Windows)
+        if: matrix.os == 'Windows'
+        run: |
+          $tags = git -C aequilibrae tag -l | Select-String -Pattern '.*' | Select-Object -Last 5
+          foreach ($tag in $tags) {
+              asv run "$($tag.Trim())^!" --machine $env:MATRIX_MACHINE
+          }
 
   results:
     needs: [benchmarking]
