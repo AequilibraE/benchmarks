@@ -79,7 +79,7 @@ jobs:
         run: |
           cp -r /mnt/c/actions-runner/_work/benchmarks/benchmarks/results/BOSGAME-SUE4P-windows results/
           asv publish
-          asv gh-pages
+          asv gh-pages --rewrite
 
       - name: Upload results as artefact
         uses: actions/upload-artifact@v4
