@@ -3,6 +3,9 @@ name: airspeed velocity
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   benchmarking:
     concurrency:
