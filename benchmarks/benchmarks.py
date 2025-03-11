@@ -1,31 +1,26 @@
-# Write the benchmarking functions here.
-# See "Writing benchmarks" in the asv docs for more information.
+import time
+from contextlib import contextmanager
 
-
-class TimeSuite:
+@contextmanager
+def benchmark(results_dict, key):
     """
-    An example benchmark that times the performance of various kinds
-    of iterating over dictionaries in Python.
+    A context manager for performance benchmarking.
+
+    Args:
+        results_dict: Dictionary to store the benchmark results
+        key: Key under which to store the execution time
+
+    Example:
+        results = {}
+        with benchmark(results, 'operation_1'):
+            # code to benchmark
+        print(results)  # {'operation_1': 0.123}
     """
-    def setup(self):
-        self.d = {}
-        for x in range(500):
-            self.d[x] = None
-
-    def time_keys(self):
-        for key in self.d.keys():
-            pass
-
-    def time_values(self):
-        for value in self.d.values():
-            pass
-
-    def time_range(self):
-        d = self.d
-        for key in range(500):
-            d[key]
+    start_time = time.perf_counter()
+    try:
+        yield
+    finally:
+        end_time = time.perf_counter()
+        results_dict[key] = end_time - start_time
 
 
-class MemSuite:
-    def mem_list(self):
-        return [0] * 256
