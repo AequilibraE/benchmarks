@@ -49,11 +49,11 @@ jobs:
             12 { $arch_info = "ARM64" }
             default { $arch_info = "Unknown" }
           }
-          echo "os_name=$os_name" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "cpu_info=$cpu_info" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "num_cpus=$num_cpus" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "ram_info=$ram_info" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "arch_info=$arch_info" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "os_name=$os_name".Trim() | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "cpu_info=$cpu_info".Trim() | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "num_cpus=$num_cpus".Trim() | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "ram_info=$ram_info".Trim() | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "arch_info=$arch_info".Trim() | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Install uv and set the python version
         uses: astral-sh/setup-uv@v5
@@ -89,12 +89,12 @@ jobs:
           New-Item -ItemType Directory -Force -Path $machine_dir | Out-Null
           $content = @"
           {
-              "arch": "${{ env.arch_info }}".Trim(),
-              "cpu": "${{ env.cpu_info }}".Trim(),
-              "machine": "${{ matrix.MACHINE }}".Trim(),
-              "num_cpu": "${{ env.num_cpus }}".Trim(),
-              "os": "${{ env.os_name }}".Trim(),
-              "ram": "${{ env.ram_info }}".Trim(),
+              "arch": "${{ env.arch_info }}",
+              "cpu": "${{ env.cpu_info }}",
+              "machine": "${{ matrix.MACHINE }}",
+              "num_cpu": "${{ env.num_cpus }}",
+              "os": "${{ env.os_name }}",
+              "ram": "${{ env.ram_info }}",
               "version": 1
           }
           "@
