@@ -65,7 +65,36 @@ jobs:
       - name: Install  ASV
         run: uv pip install asv
 
-      - name: Configure ASV
+      - name: Write ASV configuration (Linux)
+        if: matrix.os == 'Linux'
         run: |
-          asv machine --machine ${{ matrix.MACHINE }} --os "${{ env.os_name }}" --cpu "${{ env.cpu_info }}" --num_cpu "${{ env.num_cpus }}" --ram "${{ env.ram_info }}" --arch "${{ env.arch_info }}"
+          mkdir -p results/${{ matrix.MACHINE }}
+          cat <<EOF > results/${{ matrix.MACHINE }}/machine.json
+          {
+              "arch": "${{ env.arch_info }}",
+              "cpu": "${{ env.cpu_info }}",
+              "machine": "${{ matrix.MACHINE }}",
+              "num_cpu": "${{ env.num_cpus }}",
+              "os": "${{ env.os_name }}",
+              "ram": "${{ env.ram_info }}",
+              "version": 1
+          }
+          EOF
           cat results/${{ matrix.MACHINE }}/machine.json
+
+      - name: Write ASV configuration (Windows)
+        if: matrix.os == 'Windows'
+        run: |
+          $machine_dir = "results/${{ matrix.MACHINE }}"
+          $machine_json = @{
+              arch = "${{ env.arch_info }}"
+              cpu = "${{ env.cpu_info }}"
+              machine = "${{ matrix.MACHINE }}"
+              num_cpu = "${{ env.num_cpus }}"
+              os = "${{ env.os_name }}"
+              ram = "${{ env.ram_info }}"
+              version = 1
+          } | ConvertTo-Json -Depth 10
+          New-Item -ItemType Directory -Force -Path $machine_dir | Out-Null
+          $machine_json | Out-File -FilePath "$machine_dir/machine.json" -Encoding UTF8
+          Get-Content "$machine_dir/machine.json"
