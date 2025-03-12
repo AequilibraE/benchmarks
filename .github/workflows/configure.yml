@@ -86,15 +86,17 @@ jobs:
         if: matrix.os == 'Windows'
         run: |
           $machine_dir = "results/${{ matrix.MACHINE }}"
-          $machine_json = @{
-              arch = "${{ env.arch_info }}"
-              cpu = "${{ env.cpu_info }}"
-              machine = "${{ matrix.MACHINE }}"
-              num_cpu = "${{ env.num_cpus }}"
-              os = "${{ env.os_name }}"
-              ram = "${{ env.ram_info }}"
-              version = 1
-          } | ConvertTo-Json -Depth 10
           New-Item -ItemType Directory -Force -Path $machine_dir | Out-Null
-          $machine_json | Out-File -FilePath "$machine_dir/machine.json" -Encoding UTF8
+          $content = @"
+          {
+              "arch": "${{ env.arch_info }}",
+              "cpu": "${{ env.cpu_info }}",
+              "machine": "${{ matrix.MACHINE }}",
+              "num_cpu": "${{ env.num_cpus }}",
+              "os": "${{ env.os_name }}",
+              "ram": "${{ env.ram_info }}",
+              "version": 1
+          }
+          "@
+          [System.IO.File]::WriteAllText("$machine_dir/machine.json", $content, [System.Text.Encoding]::UTF8)
           Get-Content "$machine_dir/machine.json"
