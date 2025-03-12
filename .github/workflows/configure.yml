@@ -98,5 +98,5 @@ jobs:
               "version": 1
           }
           "@
-          [System.IO.File]::WriteAllLines("$machine_dir/machine.json", $content,)
+          [System.IO.File]::WriteAllLines("$machine_dir/machine.json", $content)
           Get-Content "$machine_dir/machine.json"
