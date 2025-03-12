@@ -2,6 +2,7 @@ import os
 from tempfile import TemporaryDirectory
 
 import numpy as np
+from asv_runner.benchmarks.mark import SkipNotImplemented
 
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.paths import NetworkSkimming, PathResults, RouteChoice as RouteChoiceClass
@@ -34,7 +35,10 @@ class GraphBuilding:
 
 
 class PathComputation:
-    def setup(self):
+    params = [(True, False), (None, "equirectangular", "haversine")]
+    param_names = ["early_exit", "A* heuristic"]
+
+    def setup(self, *_):
         self.dir = TemporaryDirectory()
         self.project = create_example(
             os.path.join(self.dir.name, "project"), "sioux_falls"
@@ -48,20 +52,14 @@ class PathComputation:
         self.res = PathResults()
         self.res.prepare(self.graph)
 
-    def teardown(self):
+    def teardown(self, *_):
         self.project.close()
 
-    def time_compute_path(self):
-        self.res.compute_path(1, 22)
+    def time_compute_path(self, early_exit, heuristic):
+        if early_exit and heuristic is not None:
+            raise SkipNotImplemented("A* not applicable when using early exit")
 
-    def time_compute_path_early_exit(self):
-        self.res.compute_path(1, 22, early_exit=True)
-
-    def time_compute_path_a_star_equirectangular(self):
-        self.res.compute_path(1, 22, a_star=True, heuristic="equirectangular")
-
-    def time_compute_path_a_star_haversine(self):
-        self.res.compute_path(1, 22, a_star=True, heuristic="haversine")
+        self.res.compute_path(1, 22, early_exit=early_exit, a_star=heuristic is not None, heuristic=heuristic)
 
 
 class Skimming:
@@ -88,7 +86,10 @@ class Skimming:
 
 
 class RouteChoice:
-    def setup(self):
+    params = [("bfsle", "lp"), (True, False), (True, False)]
+    param_names = ["algorithm", "assignment", "results"]
+
+    def setup(self, *_):
         self.dir = TemporaryDirectory()
         self.project = create_example(
             os.path.join(self.dir.name, "project"), "sioux_falls"
@@ -115,49 +116,12 @@ class RouteChoice:
         except AttributeError:
             self.rc.set_demand(self.mat)
 
-    def teardown(self):
+    def teardown(self, *_):
         self.project.close()
 
-    def time_bfsle_with_results(self):
-        self.rc.set_choice_set_generation("bfsle", max_routes=5, seed=12345)
+    def time_rc(self, algorithm, assignment, results):
+        self.rc.set_choice_set_generation(algorithm, max_routes=5, seed=12345)
         self.rc.prepare()
-        self.rc.execute(perform_assignment=False)
-        self.rc.get_results()
-
-    def time_bfsle_without_results(self):
-        self.rc.set_choice_set_generation("bfsle", max_routes=5, seed=12345)
-        self.rc.prepare()
-        self.rc.execute(perform_assignment=False)
-
-    def time_bfsle_assignment_with_results(self):
-        self.rc.set_choice_set_generation("bfsle", max_routes=5, seed=12345)
-        self.rc.prepare()
-        self.rc.execute(perform_assignment=True)
-        self.rc.get_results()
-
-    def time_bfsle_assignment_without_results(self):
-        self.rc.set_choice_set_generation("bfsle", max_routes=5, seed=12345)
-        self.rc.prepare()
-        self.rc.execute(perform_assignment=True)
-
-    def time_lp_with_results(self):
-        self.rc.set_choice_set_generation("lp", max_routes=5, seed=12345)
-        self.rc.prepare()
-        self.rc.execute(perform_assignment=False)
-        self.rc.get_results()
-
-    def time_lp_without_results(self):
-        self.rc.set_choice_set_generation("lp", max_routes=5, seed=12345)
-        self.rc.prepare()
-        self.rc.execute(perform_assignment=False)
-
-    def time_lp_assignment_with_results(self):
-        self.rc.set_choice_set_generation("lp", max_routes=5, seed=12345)
-        self.rc.prepare()
-        self.rc.execute(perform_assignment=True)
-        self.rc.get_results()
-
-    def time_lp_assignment_without_results(self):
-        self.rc.set_choice_set_generation("lp", max_routes=5, seed=12345)
-        self.rc.prepare()
-        self.rc.execute(perform_assignment=True)
+        self.rc.execute(perform_assignment=assignment)
+        if results:
+            self.rc.get_results()
