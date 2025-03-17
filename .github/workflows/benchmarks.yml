@@ -2,6 +2,8 @@ name: Run airspeed velocity
 
 on:
   workflow_dispatch:
+  schedule:
+  - cron: "0 0 * * *"
 
 jobs:
   benchmarking:
@@ -36,15 +38,5 @@ jobs:
       - name: Install  ASV
         run: uv pip install asv
 
-      - name: Run ASV (Linux)
-        if: matrix.os == 'Linux'
-        run: |
-          for tag in $(cd aequilibrae/ && git tag -l | tail -n 5); do asv run "$tag^!" --machine ${{ matrix.MACHINE }} ; done
-
-      - name: Run ASV (Windows)
-        if: matrix.os == 'Windows'
-        run: |
-          $tags = git -C aequilibrae tag -l | Select-String -Pattern '.*' | Select-Object -Last 5
-          foreach ($tag in $tags) {
-              asv run "$($tag.ToString().Trim())^!" --machine ${{ matrix.MACHINE }}
-          }
+      - name: Run ASV
+        run: asv run --machine ${{ matrix.MACHINE }} NEW
