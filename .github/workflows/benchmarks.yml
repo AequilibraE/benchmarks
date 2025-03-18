@@ -3,7 +3,7 @@ name: Run airspeed velocity
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "0 14 * * *"
 
 jobs:
   benchmarking:
