@@ -28,7 +28,7 @@
     // ],
     // To build the package using setuptools and a setup.py file, uncomment the following lines
     "build_command": [
-        "python -m pip install -r requirements.txt",
+        "uv pip install -r pyproject.toml",
         "python setup.py build -j8",
         "python -mpip wheel --no-deps --no-build-isolation --no-index -w {build_cache_dir} {build_dir}"
     ],
