@@ -33,7 +33,7 @@ jobs:
           prune-cache: false
 
       - name: Install additional Python versions for ASV
-        run: uv python install 3.10 3.11 3.12 --preview
+        run: uv python install 3.10 3.11 3.12 --preview --force
 
       - name: Install  ASV
         run: uv pip install asv
